@@ -8,7 +8,7 @@
           "title": "Prof. Dr.-Ing. Michael Kramp",
           "text": "Vizepräsident für Studium, und Internationales",
           "icon": "http://om-circle.de/img/PaellaStuff/beuth_logo.gif",
-          "time": 4,
+          "time": 8,
           "duration": 25
         },
         "insert2": {
@@ -23,7 +23,7 @@
       "logos": [{
         "logo1": {
           "src": "http://om-circle.de/img/PaellaStuff/google.png",
-          "time": 15,
+          "time": 4,
           "duration": 5
         },
         "logo2": {
@@ -48,7 +48,7 @@
         "link1": {
           "url": "http://www.beuth-hochschule.de",
           "text": "Beuth Hochschule",
-          "time": 13,
+          "time": 3,
           "duration": 8,
           "image": "http://om-circle.de/img/PaellaStuff/google.png",
           "interaction": "click,speech,eye"
@@ -66,14 +66,14 @@
         "commercial1": {
           "type": "image",
           "src": "http://om-circle.de/img/PaellaStuff/add1.png",
-          "time": 8,
+          "time": 12,
           "duration": 5,
           "screen": "banner"
         },
         "commercial2": {
           "type": "image",
           "src": "http://om-circle.de/img/PaellaStuff/add2.png",
-          "time": 18,
+          "time": 8,
           "duration": 6,
           "screen": "fullscreen"
         }

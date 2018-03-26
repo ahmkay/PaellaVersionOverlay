@@ -56,10 +56,8 @@ Class("paella.plugins.overlayButtonPlugin", paella.ButtonPlugin, {
         function myFunction() {
             timeVid = Math.round(vid.currentTime);
 
-            doQuery("id-left");
-            doQuery("insert1.time");
 
-
+            /*
             switch (timeVid) {
                 case doQuery("insert1.time"):                                                       //Bauchbinde
                     startOverlay(doQuery("insert1.duration"));
@@ -84,29 +82,30 @@ Class("paella.plugins.overlayButtonPlugin", paella.ButtonPlugin, {
                     startLogo(doQuery("logo1.duration"));
                     break;
             }
+            */
 
 
             //ALTE ABFRAGE VON LOKALER JSON
-            /*switch (timeVid) {
-                case dataOverlay.streams["0"].left.inserts["0"].insert1.time:                   //Bauchbinde
-                    startOverlay(dataOverlay.streams["0"].left.inserts["0"].insert1.duration);
+            switch (timeVid) {
+                case dataOverlay.insert1.time:                   //Bauchbinde
+                    startOverlay(dataOverlay.insert1.duration);
                     break;
-                case dataOverlay.streams["0"].left.notifications["0"].notification1.time:       //Notification
+                case dataOverlay.notification1.time:       //Notification
                     startGong();
                     break;
-                case dataOverlay.streams["0"].left.commercials["0"].commercial1.time:           //Werbung 1 Layer
-                    startAdd1(dataOverlay.streams["0"].left.commercials["0"].commercial1.duration);
+                case dataOverlay.commercial1.time:           //Werbung 1 Layer
+                    startAdd1(dataOverlay.commercial1.duration);
                     break;
-                case dataOverlay.streams["0"].left.commercials["0"].commercial2.time:           //Werbung 2 Fullscreen
-                    startAdd2(dataOverlay.streams["0"].left.commercials["0"].commercial2.duration);
+                case dataOverlay.commercial2.time:           //Werbung 2 Fullscreen
+                    startAdd2(dataOverlay.commercial2.duration);
                     break;
-                case dataOverlay.streams["0"].left.links["0"].link1.time:                        //Link
-                    startLink(dataOverlay.streams["0"].left.links["0"].link1.duration);
+                case dataOverlay.link1.time:                        //Link
+                    startLink(dataOverlay.link1.duration);
                     break;
-                case dataOverlay.streams["0"].left.logos["0"].logo1.time:                       //Logo
-                    startLogo(dataOverlay.streams["0"].left.logos["0"].logo1.duration);
+                case dataOverlay.logo1.time:                       //Logo
+                    startLogo(dataOverlay.logo1.duration);
                     break;
-            }*/
+            }
 
         }
 
@@ -123,15 +122,19 @@ paella.plugins.overlayButtonPlugin = new paella.plugins.overlayButtonPlugin();
 
 var dataOverlay = 0;
 var overlayBool = true;
+var addFullscreenBool = true;
 
 //JSON LOKAL ABFRAGE
-$.getJSON('../../repository/video-overlay-1/multiview.json', function (data) {
+//$.getJSON('../../repository/video-overlay-1/multiview.json', function (data) {
+$.getJSON('../../repository/video-overlay-1/multiview_neu.json', function (data) {
     dataOverlay = data;
 });
 
 //DATENBANK ABFRAGE
+/*
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "141.64.64.217";
+//var url = "mongodb://localhost:27017/";
 
 // connect to the db
 MongoClient.connect(url, function(err, db) {
@@ -155,6 +158,9 @@ MongoClient.connect(url, function(err, db) {
 window.onbeforeunload = function() {
     db.close();
 };
+*/
+
+
 
 
 
@@ -172,8 +178,8 @@ function startOverlay(duration) {
             var img = document.createElement("img");
             img.id = "overlayBauchbindeID";
 
-            img.src = doQuery("insert1.src");
-            //img.src = dataOverlay.streams["0"].left.inserts["0"].insert1.src;
+            //img.src = doQuery("insert1.src");
+            img.src = dataOverlay.insert1.src;
 
             container.appendChild(img);
         }
@@ -186,12 +192,12 @@ function startOverlay(duration) {
             var name = document.createElement("h2");
             name.id = "overlayUntertitelID";
             //ACHTUNG, HIER FEHLT NOCH DER TITLE
-            name.innerHTML = dataOverlay.streams["0"].left.inserts["0"].insert1.title;
+            name.innerHTML = dataOverlay.insert1.title;
 
             var title = document.createElement("h1");
             title.id = "overlayTitelID";
-            title.innerHTML = doQuery("insert1.text");
-            //title.innerHTML = dataOverlay.streams["0"].left.inserts["0"].insert1.text;
+            //title.innerHTML = doQuery("insert1.text");
+            title.innerHTML = dataOverlay.insert1.text;
 
             container.appendChild(title);
             container.appendChild(name);
@@ -203,8 +209,8 @@ function startOverlay(duration) {
         else {
             console.log("START ICON");
             var icon = document.createElement("img");
-            icon.src = doQuery("insert1.icon");
-            //icon.src = dataOverlay.streams["0"].left.inserts["0"].insert1.icon;
+            //icon.src = doQuery("insert1.icon");
+            icon.src = dataOverlay.insert1.icon;
             icon.id = "overlayIconID";
 
             container.appendChild(icon);
@@ -252,13 +258,13 @@ function startGong() {
             }
             else {
                 var gong = document.createElement("audio");
-                gong.src = dataOverlay.streams["0"].left.notifications["0"].notification1.src_audio;
+                gong.src = dataOverlay.notification1.src_audio;
                 gong.type = "audio/mpeg";
                 gong.id = "gong";
                 gong.play();
 
                 var dot = document.createElement("img");
-                dot.src = dataOverlay.streams["0"].left.notifications["0"].notification1.src_visuell;
+                dot.src = dataOverlay.notification1.src_visuell;
                 dot.id = "dotGong";
                 dot.style.opacity = 100;
 
@@ -280,8 +286,8 @@ function startAdd1(duration) {
     else {
         console.log("START ADD Overlay");
         var add1 = document.createElement("img");
-        add1.src = doQuery("commercial1.src");
-        //add1.src = dataOverlay.streams["0"].left.commercials["0"].commercial1.src;
+        //add1.src = doQuery("commercial1.src");
+        add1.src = dataOverlay.commercial1.src;
         add1.id = "add1IdBox";
 
         var container = document.getElementById("overlayContainer");
@@ -295,28 +301,36 @@ function startAdd1(duration) {
 }
 
 function startAdd2(duration) {
-    if (document.getElementById("add2IdBox")) {
-        console.log("Add schon vorhanden");
+    console.log(addFullscreenBool);
+    if(addFullscreenBool){
+        if (document.getElementById("add2IdBox")) {
+            console.log("Add schon vorhanden");
+        }
+        else {
+            console.log("START ADD Fullscreen");
+            var add2 = document.createElement("img");
+            add2.id = "add2IdBox";
+            //add2.src = doQuery("commercial2.src");
+            add2.src = dataOverlay.commercial2.src;
+
+            var container = document.getElementById("overlayContainer");
+            container.appendChild(add2);
+
+            paella.player.pause();
+            document.getElementById("playerContainer_controls").style.display = "none";
+
+            setTimeout(function () {
+                container.removeChild(add2);
+                addFullscreenBool = false;
+                paella.player.play();
+                document.getElementById("playerContainer_controls").style.display = "block";
+            }, (duration * 1000));
+            setTimeout(function () {
+                addFullscreenBool = true;
+            }, (duration * 1000 + 1000));
+        }
     }
-    else {
-        console.log("START ADD Fullscreen");
-        var add2 = document.createElement("img");
-        add2.id = "add2IdBox";
-        add2.src = doQuery("commercial2.src");
-        //add2.src = dataOverlay.streams["0"].left.commercials["0"].commercial2.src;
 
-        var container = document.getElementById("overlayContainer");
-        container.appendChild(add2);
-
-        paella.player.pause();
-        document.getElementById("playerContainer_controls").style.display = "none";
-
-        setTimeout(function () {
-            container.removeChild(add2);
-            paella.player.play();
-            document.getElementById("playerContainer_controls").style.display = "block";
-        }, (duration * 1000));
-    }
 }
 
 function startLink(duration) {
@@ -330,6 +344,7 @@ function startLink(duration) {
 
             //Hauptcontainer
             var linkContainerMaster = document.getElementById("linkContainerMaster");
+            linkContainerMaster.style.opacity = 100;
 
             //Linkcontainer
             var linkContainer = document.createElement("div");
@@ -339,14 +354,16 @@ function startLink(duration) {
             //Bild-Link
             var linkContainerAnker1 = document.createElement("a");
             linkContainerAnker1.setAttribute('target', '_blank');
-            linkContainerAnker1.setAttribute('href', doQuery("link1.url"));
+            //linkContainerAnker1.setAttribute('href', doQuery("link1.url"));
+            linkContainerAnker1.setAttribute('href', dataOverlay.link1.url);
             linkContainerAnker1.id = "linkContainerAnker";
             linkContainer.appendChild(linkContainerAnker1);
 
             //Bild
             var linkContainerImage = document.createElement("img");
             linkContainerImage.id = "linkContainerImage";
-            linkContainerImage.src = doQuery("link1.image");
+            //linkContainerImage.src = doQuery("link1.image");
+            linkContainerImage.src = dataOverlay.link1.image;
             linkContainerAnker1.appendChild(linkContainerImage);
 
             //Horizontale Linie
@@ -362,8 +379,10 @@ function startLink(duration) {
             var linkContainerAnker2 = document.createElement("a");
             linkContainerAnker2.id = "linkContainerAnker2";
             linkContainerAnker2.setAttribute('target', '_blank');
-            linkContainerAnker2.setAttribute('href', doQuery("link1.url"));
-            linkContainerAnker2.innerHTML = doQuery("link1.text");
+            //linkContainerAnker2.setAttribute('href', doQuery("link1.url"));
+            linkContainerAnker2.setAttribute('href', dataOverlay.link1.url);
+            //linkContainerAnker2.innerHTML = doQuery("link1.text");
+            linkContainerAnker2.innerHTML = dataOverlay.link1.text;
             linkContainerText.appendChild(linkContainerAnker2);
 
 
@@ -372,6 +391,7 @@ function startLink(duration) {
 
             setTimeout(function () {
                 linkContainerMaster.removeChild(linkContainer);
+                linkContainerMaster.style.opacity = 0;
             }, (duration * 1000));
         }
 
@@ -383,7 +403,8 @@ function startLogo(duration) {
     var logo = document.getElementById("beuth-logo.png");
     logo.style.display = "block";
     logo.style.zIndex = 15;
-    logo.src = doQuery("logo1.src");
+    //logo.src = doQuery("logo1.src");
+    logo.src = dataOverlay.logo1.src;
 
     setTimeout(function () {
         logo.src = "config/profiles/resources/beuth-logo.png";

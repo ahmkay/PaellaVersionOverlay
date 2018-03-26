@@ -1,0 +1,10 @@
+.DS_Store
+desktop.ini
+test
+*~
+tmp
+node_modules
+repository_test/repository/local*
+.idea
+*.iml
+!beuth/**
