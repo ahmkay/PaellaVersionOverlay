@@ -26,7 +26,7 @@ Class("paella.plugins.overlayButtonPlugin", paella.ButtonPlugin, {
         var button = document.getElementById("buttonPlugin1");
         var iconLayer = document.createElement("img");
         iconLayer.id = "overlayButtonIconID";
-        iconLayer.src = "resources/images/layer_white.png";
+        iconLayer.src = "http://141.64.64.217/paella_player/build/player/resources/images/layer_white.png";
         iconLayer.style.width = 100 + "%";
         button.appendChild(iconLayer);
     },
