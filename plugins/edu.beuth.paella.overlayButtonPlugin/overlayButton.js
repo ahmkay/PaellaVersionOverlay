@@ -125,8 +125,8 @@ var overlayBool = true;
 var addFullscreenBool = true;
 
 //JSON LOKAL ABFRAGE
-//$.getJSON('../../repository/video-overlay-1/multiview.json', function (data) {
-$.getJSON('../../repository/video-overlay-1/multiview_neu.json', function (data) {
+$.getJSON('../../repository/video-overlay-1/multiview.json', function (data) {
+//$.getJSON('../../repository/video-overlay-1/multiview_neu.json', function (data) {
     dataOverlay = data;
 });
 
