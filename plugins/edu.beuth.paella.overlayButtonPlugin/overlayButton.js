@@ -26,7 +26,7 @@ Class("paella.plugins.overlayButtonPlugin", paella.ButtonPlugin, {
         var button = document.getElementById("buttonPlugin1");
         var iconLayer = document.createElement("img");
         iconLayer.id = "overlayButtonIconID";
-        iconLayer.src = "http://141.64.64.217/paella_player/build/player/resources/images/layer_white.png";
+        iconLayer.src = "resources/images/layer_white.png";
         iconLayer.style.width = 100 + "%";
         button.appendChild(iconLayer);
     },
@@ -125,8 +125,8 @@ var overlayBool = true;
 var addFullscreenBool = true;
 
 //JSON LOKAL ABFRAGE
-//$.getJSON('../../repository/video-overlay-1/multiview.json', function (data) {
-$.getJSON('http://141.64.64.217/paella_player/build/repository/video-overlay-1/multiview.json', function (data) {
+$.getJSON('../../repository/video-overlay-1/multiview.json', function (data) {
+//$.getJSON('http://141.64.64.217/paella_player/build/repository/video-overlay-1/multiview.json', function (data) {
 //$.getJSON('../../repository/video-overlay-1/multiview_neu.json', function (data) {
     dataOverlay = data;
 });
