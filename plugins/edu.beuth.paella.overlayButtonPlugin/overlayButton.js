@@ -23,12 +23,7 @@ Class("paella.plugins.overlayButtonPlugin", paella.ButtonPlugin, {
 
     checkEnabled: function (onSuccess) {
         onSuccess(!paella.player.isLiveStream());
-        var button = document.getElementById("buttonPlugin1");
-        var iconLayer = document.createElement("img");
-        iconLayer.id = "overlayButtonIconID";
-        iconLayer.src = "resources/images/layer_white.png";
-        iconLayer.style.width = 100 + "%";
-        button.appendChild(iconLayer);
+
     },
 
     setup: function () {
@@ -43,6 +38,12 @@ Class("paella.plugins.overlayButtonPlugin", paella.ButtonPlugin, {
         });
 
 
+        var button = document.getElementById("buttonPlugin1");
+        var iconLayer = document.createElement("img");
+        iconLayer.id = "overlayButtonIconID";
+        iconLayer.src = "resources/images/layer_white.png";
+        iconLayer.style.width = 100 + "%";
+        button.appendChild(iconLayer);
 
 
 
