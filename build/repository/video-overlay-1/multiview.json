@@ -40,7 +40,7 @@
   "link1": {
     "url": "http://www.beuth-hochschule.de",
     "text": "Beuth Hochschule",
-    "time": 30,
+    "time": 31,
     "duration": 5,
     "image": "http://om-circle.de/img/PaellaStuff/google.png",
     "interaction": "click,speech,eye"
