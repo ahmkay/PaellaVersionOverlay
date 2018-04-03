@@ -84,18 +84,16 @@ function EpisodeParser() {
 		this.path = this.path.join('/') + '/';
 
 		var streams = {};
-		var metadata =[];
-		metadata['duration'] = episode.mediapackage.duration/1000;
-		metadata['title'] = episode.mediapackage.title; 
-		//console.log(metadata); return false;
-		var tracks = episode.mediapackage.media.track;
-		var attachments = episode.mediapackage.attachments.attachment;
+		var tracks = episode.mediapackage.media.tracks;
+		var slides = episode.mediapackage.slides;
+		var blackboards = episode.mediapackage.blackboard;
 
 		// Read the tracks!!
 		for (var i=0; i<tracks.length; ++i) {
 			var currentTrack = tracks[i];
 			var currentStream = streams[currentTrack.type];
 			if (currentStream == undefined) { currentStream = { sources:{}, preview:'' }; }
+
 
 			if (isStreaming(currentTrack.url)) {
 				if ( !(currentStream.sources['rtmp']) || !(currentStream.sources['rtmp'] instanceof Array)){
@@ -114,9 +112,9 @@ function EpisodeParser() {
 					case 'video/x-flv':
 						videotype = 'flv';
 						break;
-					default:
-						paella.debug.log('StandAloneVideoLoader: MimeType ('+currentTrack.mimetype+') not recognized!');
-					break;
+						dafault:
+							paella.debug.log('StandAloneVideoLoader: MimeType ('+currentTrack.mimetype+') not recognized!');
+						break;
 				}
 				if (videotype){
 					if ( !(currentStream.sources[videotype]) || !(currentStream.sources[videotype] instanceof Array)){
@@ -127,85 +125,61 @@ function EpisodeParser() {
 			}
 
 			currentStream.preview = currentTrack.preview;
+
 			streams[currentTrack.type] = currentStream;
 		}
 
 		var presenter = streams["presenter/delivery"];
 		var presentation = streams["presentation/delivery"];
 
+		if (episode.mediapackage.metadata) {
+			parseMetadata(episode.mediapackage.metadata);
+		}
+
 		// Read the slides
-		if (attachments) {
-			var duration = parseInt(episode.mediapackage.duration/1000);	
-			var imageSource =   {type:"image/jpeg", frames:[], count:0, duration: duration, res:{w:320, h:180}};
-			var imageSourceHD = {type:"image/jpeg", frames:[], count:0, duration: duration, res:{w:1280, h:720}};
-			var blackboardSource = {type:"image/jpeg", frames:[], count:0, duration: duration, res:{w:1280, h:720}};
-			var thumbSource = {mimetype:"image/jpeg", frames:[], count:0, duration: duration, res:{w:1280, h:720}};
+		if (slides) {
+			var duration = parseInt(episode.mediapackage.metadata.duration/1000);
+			var imageSource =   {mimetype:"image/jpeg", frames:[], count:0, duration: duration, res:{w:320, h:180}}
+			var thumbSource = {mimetype:"image/jpeg", frames:[], count:0, duration: duration, res:{w:1280, h:720}}
 
-			for (var i=0; i<attachments.length; ++i) {
-				var currentAttachment = attachments[i];
+			for (var i=0; i<slides.length; ++i) {
+				var currentSlide = slides[i];
 
-				if (currentAttachment.type == "blackboard/image") {
-					if (/time=T(\d+):(\d+):(\d+)/.test(currentAttachment.ref)) {
-						time = parseInt(RegExp.$1)*60*60 + parseInt(RegExp.$2)*60 + parseInt(RegExp.$3);
-						
-						blackboardSource.frames["frame_"+time] = currentAttachment.url;
-						blackboardSource.count = blackboardSource.count +1;                	
-					}
-				
-				}
-				else if (currentAttachment.type == "presentation/segment+preview+hires") {
-					if (/time=T(\d+):(\d+):(\d+)/.test(currentAttachment.ref)) {
-						time = parseInt(RegExp.$1)*60*60 + parseInt(RegExp.$2)*60 + parseInt(RegExp.$3);
-						imageSourceHD.frames["frame_"+time] = currentAttachment.url;
-						imageSourceHD.count = imageSourceHD.count +1;
-					}
-				}
-				else if (currentAttachment.type == "presentation/segment+preview") {
-					if (/time=T(\d+):(\d+):(\d+)/.test(currentAttachment.ref)) {
-						var time = parseInt(RegExp.$1)*60*60 + parseInt(RegExp.$2)*60 + parseInt(RegExp.$3);
-						console.log("######## ---- "+time+" ----########");
-						console.log(currentAttachment.url);
-						imageSource.frames["frame_"+time] = currentAttachment.url;
-						imageSource.count = imageSource.count +1;
-						
-						url = currentAttachment.url;
+				if (/(\d+):(\d+):(\d+)/.test(currentSlide.time)) {
+					time = parseInt(RegExp.$1)*60*60 + parseInt(RegExp.$2)*60 + parseInt(RegExp.$3);
 
-						imageSource.frames.push({ time:time, src:url });
-						imageSource.count = imageSource.count +1;
-						thumbSource.frames.push({ time:time, src:url });
-						thumbSource.count = thumbSource.count +1;
 
-						this.frameList.push({id:'frame_'+time, mimetype:currentAttachment.mimetype, time:time, url:url, thumb:url});
-					}
-				}
-				else if (currentAttachment.type == "presentation/player+preview") {
-					presentation.preview = currentAttachment.url;
-				}
-				else if (currentAttachment.type == "presenter/player+preview") {
-					presenter.preview = currentAttachment.url;
+					slideUrl = (currentSlide.slide) ? currentSlide.slide.url : currentSlide.thumb.url;
+					thumbUrl = (currentSlide.thumb) ? currentSlide.thumb.url : currentSlide.slide.url;
+
+					imageSource.frames.push({ time:time, src:slideUrl });
+					imageSource.count = imageSource.count +1;
+					thumbSource.frames.push({ time:time, src:thumbUrl });
+					thumbSource.count = thumbSource.count +1;
+
+					this.frameList.push({id:'frame_'+time, mimetype:currentSlide.mimetype, time:time, url:slideUrl, thumb:thumbUrl});
 				}
 			}
 
-			// Set the image stream
-		var imagesArray = [];
-		if (imageSourceHD.count > 0) { imagesArray.push(imageSourceHD); }
-		if (imageSource.count > 0) { imagesArray.push(imageSource); }
-		if ( (imagesArray.length > 0) && (presentation != undefined) ){
-			presentation.sources.image = imagesArray; 
-		}
-		
-		// Set the blackboard images
-		var blackboardArray = [];
-		if (blackboardSource.count > 0) { blackboardArray.push(blackboardSource); }		
-		if ( (blackboardArray.length > 0) && (presenter != undefined) ){
-			presenter.sources.image = blackboardArray;
+
+			// Set the image stream for presentation
+			var imagesArray = [];
+			if (imageSource.count > 0) { imagesArray.push(imageSource); }
+			if (thumbSource.count > 0) { imagesArray.push(thumbSource); }
+
+			if (imagesArray.length > 0) {
+				if (presentation == undefined) {
+					presentation = { sources:{}, preview:'' };
+				}
+				presentation.sources.image = imagesArray;
+			}
 		}
 
 
 		// Read the blackboard
-		/*if (blackboards) {
+		if (blackboards) {
 			parseBlackboard(blackboards);
-		}*/
+		}
 
 		// Finaly push the streams
 		if (presenter) { this.streams.push(presenter); }
@@ -213,7 +187,6 @@ function EpisodeParser() {
 
 		// Load Captions
 		this.captions = episode.mediapackage.captions;
-	}
 	};
 };
 
